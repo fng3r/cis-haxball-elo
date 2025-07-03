@@ -10,6 +10,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
 import data from "@/seasonStats"
 import type { SeasonStatsType, AllTimeStatsType } from "@/types/types"
+import { Label } from "@/components/ui/label"
+import { Trophy } from "lucide-react"
 
 const Home: React.FC = () => {
   const seasonOptions = useMemo(() => Object.keys(data), [])
@@ -82,10 +84,12 @@ const Home: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8 px-4">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">CIS ELO Leaderboard</h1>
-            <p className="text-muted-foreground">Competitive gaming statistics and rankings</p>
+            <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
+              <Trophy className="h-8 w-8 text-yellow-400 dark:text-yellow-500" />
+              CIS ELO Leaderboard
+            </h1>
           </div>
           <ThemeToggle />
         </div>
@@ -100,9 +104,9 @@ const Home: React.FC = () => {
 
               <TabsContent value="season" className="space-y-4">
                 <div className="flex items-center space-x-4">
-                  <label htmlFor="season-select" className="text-sm font-medium">
+                  <Label htmlFor="season-select" className="text-sm font-medium">
                     Select Season:
-                  </label>
+                  </Label>
                   <Select value={selectedSeason} onValueChange={setSelectedSeason}>
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="Select a season" />
