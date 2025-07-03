@@ -133,7 +133,7 @@ export function DataTable<TData, TValue>({
             }
           }}
         >
-          <span>{typeof column.columnDef.header === "string" ? column.columnDef.header : column.id}</span>
+          <span>{column.columnDef.header?.toString() || column.id}</span>
           {canSort && (
             <span
               className={
@@ -236,9 +236,7 @@ export function DataTable<TData, TValue>({
                 onCheckedChange={(value: boolean) => column.toggleVisibility(!!value)}
                 onSelect={e => e.preventDefault()}
               >
-                {typeof column.columnDef.header === "string"
-                  ? column.columnDef.header
-                  : column.id}
+                {column.columnDef.header?.toString() || column.id}
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>

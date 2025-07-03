@@ -19,12 +19,14 @@ const columns: ColumnDef<AllTimeStatsType>[] = [
     ),
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: false,
   },
   {
     accessorKey: "player",
     header: "Player",
     enableSorting: false,
     enableColumnFilter: false,
+    enableHiding: false,
   },
   {
     accessorKey: "totalSeasons",

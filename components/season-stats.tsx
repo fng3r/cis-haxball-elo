@@ -19,12 +19,14 @@ const columns: ColumnDef<SeasonStatsType>[] = [
     ),
     enableSorting: true,
     enableColumnFilter: true,
+    enableHiding: false,
   },
   {
     accessorKey: "nickname",
     header: "Player",
     enableSorting: false,
     enableColumnFilter: false,
+    enableHiding: false,
   },
   {
     accessorKey: "elo",
