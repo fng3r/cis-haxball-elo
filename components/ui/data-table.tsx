@@ -11,12 +11,20 @@ import {
   useReactTable,
   VisibilityState,
   ColumnFiltersState,
+  Header,
+  Row,
+  AccessorFnColumnDef,
+  AccessorFnColumnDefBase,
+  AccessorKeyColumnDefBase,
+  AccessorKeyColumnDef,
 } from "@tanstack/react-table"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
+import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown, Filter as FilterIcon, Filter as FilterIconFilled, X } from "lucide-react"
+import { useState, useRef } from "react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -25,25 +33,67 @@ interface DataTableProps<TData, TValue> {
   filterPlaceholder?: string
 }
 
+// Helper for numeric filter operators
+const NUMERIC_OPERATORS = [
+  { label: "=", value: "eq" },
+  { label: ">", value: "gt" },
+  { label: "<", value: "lt" },
+  { label: ">=", value: "gte" },
+  { label: "<=", value: "lte" },
+  { label: "!=", value: "neq" },
+]
+
+function applyNumericFilter(operator: string, cellValue: any, filterValue: any) {
+  const num = Number(cellValue)
+  const filterNum = Number(filterValue)
+  switch (operator) {
+    case "eq": return num === filterNum
+    case "gt": return num > filterNum
+    case "lt": return num < filterNum
+    case "gte": return num >= filterNum
+    case "lte": return num <= filterNum
+    case "neq": return num !== filterNum
+    default: return true
+  }
+}
+
 export function DataTable<TData, TValue>({
   columns,
   data,
   filterColumn,
   filterPlaceholder = "Filter...",
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([
-    {
-      id: "rank",
-      desc: false,
-    },
-  ])
+  const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  // Track numeric filter operators per column
+  const [numericOperators, setNumericOperators] = React.useState<Record<string, string>>({})
+  const [filterDropdownOpen, setFilterDropdownOpen] = useState<string | null>(null)
+
+  // Patch columns to add filterFn for numeric columns
+  const patchedColumns = columns.map(col => {
+    const accessorKey = (col as AccessorKeyColumnDef<TData, TValue>).accessorKey as keyof TData
+
+    if (col.enableColumnFilter && accessorKey && typeof data[0]?.[accessorKey] === "number") {
+      return {
+        ...col,
+        filterFn: (row: Row<TData>, columnId: string, filterValue: any) => {
+          const operator = numericOperators[columnId] || "eq"
+          if (accessorKey === "winrate") {
+            const filterNum = Number(filterValue) / 100
+            return applyNumericFilter(operator, row.getValue(columnId), filterNum)
+          }
+          return applyNumericFilter(operator, row.getValue(columnId), filterValue)
+        },
+      }
+    }
+    return col
+  })
 
   const table = useReactTable({
     data,
-    columns,
+    columns: patchedColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -59,36 +109,86 @@ export function DataTable<TData, TValue>({
     },
   })
 
-  const renderSortableHeader = (column: any) => {
-    if (!column.getCanSort()) {
-      return typeof column.columnDef.header === "string"
-        ? column.columnDef.header
-        : column.id
-    }
-
+  const renderSortableHeader = (header: Header<TData, unknown>, filterActive: boolean, onFilterClick: () => void) => {
+    const column = header.column
+    const isSorted = column.getIsSorted()
+    const isFiltered = filterActive
+    const canSort = column.getCanSort()
+    const canFilter = column.getCanFilter()
+    const dropdownKey = header.id
     return (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        className="h-auto p-0 font-semibold hover:bg-transparent"
-      >
-        {typeof column.columnDef.header === "string"
-          ? column.columnDef.header
-          : column.id}
-        {column.getIsSorted() === "desc" ? (
-          <ArrowDown className="ml-2 h-4 w-4" />
-        ) : column.getIsSorted() === "asc" ? (
-          <ArrowUp className="ml-2 h-4 w-4" />
-        ) : (
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        )}
-      </Button>
+      <div className="flex items-center gap-1 group">
+        <button
+          type="button"
+          className="flex items-center gap-1 focus:outline-none bg-transparent border-0 p-0 m-0"
+          style={{ cursor: canSort ? "pointer" : "default" }}
+          onClick={() => {
+            if (!canSort) return;
+            if (!isSorted) {
+              column.toggleSorting(false); // sort asc
+            } else if (isSorted === "asc") {
+              column.toggleSorting(true); // sort desc
+            } else {
+              column.clearSorting();
+            }
+          }}
+        >
+          <span>{typeof column.columnDef.header === "string" ? column.columnDef.header : column.id}</span>
+          {canSort && (
+            <span
+              className={
+                isSorted
+                  ? "opacity-100"
+                  : "opacity-0 group-hover:opacity-100 transition-opacity"
+              }
+            >
+              {isSorted === "desc" ? (
+                <ArrowDown className="ml-1 h-4 w-4" />
+              ) : isSorted === "asc" ? (
+                <ArrowUp className="ml-1 h-4 w-4" />
+              ) : (
+                <ArrowUpDown className="ml-1 h-4 w-4" />
+              )}
+            </span>
+          )}
+        </button>
+
+        {canFilter && (
+        <DropdownMenu open={filterDropdownOpen === dropdownKey} onOpenChange={open => setFilterDropdownOpen(open ? dropdownKey : null)}>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className={`ml-1 p-0 h-5 w-5 ${
+                isFiltered ? "opacity-100" : "opacity-0 group-hover:opacity-100 transition-opacity"
+              }`}
+              tabIndex={-1}
+              onClick={e => { e.stopPropagation(); }}
+            >
+              {isFiltered ? (
+                <FilterIconFilled className="h-4 w-4 fill-current" />
+              ) : (
+                <FilterIcon className="h-4 w-4" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="p-2 w-56">
+            <ColumnFilterDropdown
+              header={header}
+              numericOperators={numericOperators}
+              setNumericOperators={setNumericOperators}
+              data={data}
+              closeDropdown={() => setFilterDropdownOpen(null)}
+            />
+          </DropdownMenuContent>
+        </DropdownMenu>)}
+      </div>
     )
   }
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4 gap-2">
+      <div className="flex items-center justify-between py-4 gap-2">
         {filterColumn && (
           <Input
             placeholder={filterPlaceholder}
@@ -99,12 +199,32 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
         )}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+        <div className="flex items-center gap-2">
+          {table.getState().sorting.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => table.resetSorting()}
+            >
+              <X className="size-4" />
+              Reset sorting
             </Button>
-          </DropdownMenuTrigger>
+          )}
+          {table.getState().columnFilters.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => table.resetColumnFilters()}
+              className="flex items-center gap-2"
+            >
+              <X className="size-4" />
+              Clear filters
+            </Button>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Columns <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
             <DropdownMenuSeparator />
@@ -114,6 +234,7 @@ export function DataTable<TData, TValue>({
                 className="capitalize"
                 checked={column.getIsVisible()}
                 onCheckedChange={(value: boolean) => column.toggleVisibility(!!value)}
+                onSelect={e => e.preventDefault()}
               >
                 {typeof column.columnDef.header === "string"
                   ? column.columnDef.header
@@ -122,6 +243,8 @@ export function DataTable<TData, TValue>({
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
+
       </div>
       <div className="rounded-md border">
         <Table>
@@ -129,10 +252,14 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="group">
                     {header.isPlaceholder
                       ? null
-                      : renderSortableHeader(header.column)}
+                      : renderSortableHeader(
+                          header,
+                          !!header.column.getFilterValue(),
+                          () => {}
+                        )}
                   </TableHead>
                 ))}
               </TableRow>
@@ -158,6 +285,86 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
+      </div>
+    </div>
+  )
+}
+
+interface ColumnFilterDropdownProps {
+  header: any
+  numericOperators: Record<string, string>
+  setNumericOperators: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  data: any[]
+  closeDropdown: () => void
+}
+
+function ColumnFilterDropdown({ header, numericOperators, setNumericOperators, data, closeDropdown }: ColumnFilterDropdownProps) {
+  const isNumeric = typeof data[0]?.[header.column.id as string] === "number"
+  const [localValue, setLocalValue] = useState(header.column.getFilterValue() ?? "")
+
+  // For numeric columns, also track local operator
+  const [localOperator, setLocalOperator] = useState(numericOperators[header.column.id as string] || "eq")
+
+  const applyFilter = () => {
+    if (isNumeric) {
+      setNumericOperators(op => ({ ...op, [header.column.id as string]: localOperator }))
+    }
+    header.column.setFilterValue(localValue)
+    closeDropdown()
+  }
+
+  const resetFilter = () => {
+    setLocalValue("")
+    if (isNumeric) {
+      setLocalOperator("eq")
+      setNumericOperators(op => ({ ...op, [header.column.id as string]: "eq" }))
+    }
+    header.column.setFilterValue("")
+    closeDropdown()
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="font-semibold text-sm text-muted-foreground">
+        {header.column.columnDef.header ?? header.column.id}
+      </div>
+      {isNumeric ? (
+        <div className="flex gap-2 items-center">
+          <Select
+            value={localOperator}
+            onValueChange={setLocalOperator}
+            >
+            <SelectTrigger className="w-24">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {NUMERIC_OPERATORS.map(op => (
+                <SelectItem key={op.value} value={op.value}>{op.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Input
+            placeholder="Filter value"
+            value={localValue as string}
+            onChange={e => setLocalValue(e.target.value)}
+            type="number"
+          />
+        </div>
+      ) : (
+        <Input
+          placeholder={`Filter...`}
+          value={localValue as string}
+          onChange={e => setLocalValue(e.target.value)}
+          type="text"
+        />
+      )}
+      <div className="flex gap-2">
+        <Button size="sm" variant="outline" onClick={resetFilter} className="flex-1">
+          Reset
+        </Button>
+        <Button size="sm" onClick={applyFilter} className="flex-1">
+          Apply
+        </Button>
       </div>
     </div>
   )

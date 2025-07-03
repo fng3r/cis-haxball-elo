@@ -18,34 +18,40 @@ const columns: ColumnDef<SeasonStatsType>[] = [
       </Badge>
     ),
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "nickname",
     header: "Player",
     enableSorting: false,
+    enableColumnFilter: false,
   },
   {
     accessorKey: "elo",
     header: "ELO",
     cell: ({ row }) => <span className="text-blue-600 dark:text-blue-400 font-semibold">{row.original.elo}</span>,
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "matches",
     header: "Matches",
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "wins",
     header: "Wins",
     cell: ({ row }) => <span className="text-green-600 dark:text-green-400 font-medium">{row.original.wins}</span>,
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "losses",
     header: "Losses",
     cell: ({ row }) => <span className="text-red-600 dark:text-red-400 font-medium">{row.original.losses}</span>,
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "winrate",
@@ -56,40 +62,46 @@ const columns: ColumnDef<SeasonStatsType>[] = [
       return <span className={`font-medium ${color}`}>{rate.toFixed(1)}%</span>
     },
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "highestWinstreak",
     header: "Best Streak",
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "highestLosestreak",
     header: "Worst Streak",
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "eloGain",
     header: "ELO Gain",
     cell: ({ row }) => <span className="font-medium">{row.original.eloGain}</span>,
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "eloPerMatch",
     header: "ELO/Match",
     cell: ({ row }) => (row.original.eloPerMatch as number).toFixed(1),
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "bansFor800Elo",
     header: "Bans",
     cell: ({ row }) => row.original.bansFor800Elo ? <span className="text-orange-600 dark:text-orange-400 font-medium">{row.original.bansFor800Elo}</span> : "-",
     enableSorting: true,
+    enableColumnFilter: true,
   },
 ]
 
 const SeasonStats: React.FC<SeasonStatsProps> = ({ seasonData }) => {
   return (
-    <DataTable columns={columns} data={seasonData} filterColumn="nickname" filterPlaceholder="Filter players..." />
+    <DataTable columns={columns} data={seasonData} filterColumn="nickname" filterPlaceholder="Find player by name" />
   )
 }
 
