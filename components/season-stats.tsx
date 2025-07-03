@@ -44,13 +44,11 @@ const columns: Column<SeasonStatsType>[] = [
     key: "winrate",
     header: "Winrate",
     format: (value) => {
-      const rate = value as number
+      const rate = (value as number) * 100
       const color =
-        rate >= 75
+        rate >= 50
           ? "text-green-600 dark:text-green-400"
-          : rate >= 60
-            ? "text-yellow-600 dark:text-yellow-400"
-            : "text-red-600 dark:text-red-400"
+          : "text-red-600 dark:text-red-400"
       return <span className={`font-medium ${color}`}>{rate.toFixed(1)}%</span>
     },
   },
