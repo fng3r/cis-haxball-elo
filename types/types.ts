@@ -15,6 +15,7 @@ export type SeasonStatsType = {
 }
 
 export type AllTimeStatsType = {
+  rank: number
   player: string
   totalSeasons: number
   totalElo: number

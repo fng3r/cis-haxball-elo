@@ -14,6 +14,15 @@ type Column<T> = {
 }
 
 const columns: Column<AllTimeStatsType>[] = [
+  {
+    key: "rank",
+    header: "Rank",
+    format: (value, row) => (
+      <Badge variant={row.rank <= 3 ? "default" : "secondary"} className="font-bold">
+        #{value}
+      </Badge>
+    ),
+  },
   { key: "player", header: "Player" },
   {
     key: "totalSeasons",

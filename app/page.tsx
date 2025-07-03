@@ -42,6 +42,7 @@ const Home: React.FC = () => {
           }
         } else {
           playerStats[nickname] = {
+            rank: 0, // calculated later
             player: nickname,
             totalSeasons: 1,
             totalElo: elo,
@@ -67,8 +68,9 @@ const Home: React.FC = () => {
 
     const allTimeArray = Object.values(playerStats).sort((a, b) => b.totalEloGain - a.totalEloGain)
 
-    return allTimeArray.map((player) => ({
+    return allTimeArray.map((player, idx) => ({
       ...player,
+      rank: idx + 1,
       winrate: player.matches > 0 ? player.wins / player.matches : 0,
       avgEloPerMatch: player.matches > 0 ? player.totalEloGain / player.matches : 0,
       avgMatchesPerSeason: player.totalSeasons > 0 ? player.matches / player.totalSeasons : 0,
