@@ -21,14 +21,14 @@ const columns: Column<AllTimeStatsType>[] = [
     format: (value) => <Badge variant="outline">{value}</Badge>,
   },
   {
-    key: "totalElo",
-    header: "Total ELO",
-    format: (value) => <span className="font-semibold text-primary">{value}</span>,
-  },
-  {
     key: "totalEloGain",
     header: "Total ELO Gain",
-    format: (value) => <span className="text-blue-600 dark:text-blue-400 font-medium">+{value}</span>,
+    format: (value) => <span className="text-blue-600 dark:text-blue-400 font-semibold">{value}</span>,
+  },
+  {
+    key: "totalElo",
+    header: "Total ELO",
+    format: (value) => <span className="text-primary">{value}</span>,
   },
   { key: "matches", header: "Matches" },
   {
@@ -47,11 +47,9 @@ const columns: Column<AllTimeStatsType>[] = [
     format: (value) => {
       const rate = (value as number) * 100
       const color =
-        rate >= 75
+        rate >= 50
           ? "text-green-600 dark:text-green-400"
-          : rate >= 60
-            ? "text-yellow-600 dark:text-yellow-400"
-            : "text-red-600 dark:text-red-400"
+          : "text-red-600 dark:text-red-400"
       return <span className={`font-medium ${color}`}>{rate.toFixed(2)}%</span>
     },
   },
@@ -65,22 +63,26 @@ const columns: Column<AllTimeStatsType>[] = [
   {
     key: "avgMatchesPerSeason",
     header: "Avg Matches/Season",
-    format: (v) => (v as number).toFixed(1),
+    format: (v) => (v as number).toFixed(0),
   },
   {
     key: "avgWinsPerSeason",
     header: "Avg Wins/Season",
-    format: (v) => (v as number).toFixed(1),
+    format: (v) => (v as number).toFixed(0),
   },
   {
     key: "avgLossesPerSeason",
     header: "Avg Losses/Season",
-    format: (v) => (v as number).toFixed(1),
+    format: (v) => (v as number).toFixed(0),
   },
   { key: "maxMatchesPerSeason", header: "Max Matches/Season" },
   { key: "maxWinsPerSeason", header: "Max Wins/Season" },
   { key: "maxLossesPerSeason", header: "Max Losses/Season" },
-  { key: "totalBans", header: "Total Bans" },
+  {
+    key: "totalBans",
+    header: "Total Bans",
+    format: (value) => (value ? <span className="text-orange-600 dark:text-orange-400 font-medium">{value}</span> : "-"),
+  },
 ]
 
 const AllTimeStats: React.FC<AllTimeStatsProps> = ({ allTimeData }) => {

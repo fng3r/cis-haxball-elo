@@ -27,7 +27,7 @@ const columns: Column<SeasonStatsType>[] = [
   {
     key: "elo",
     header: "ELO",
-    format: (value) => <span className="font-semibold text-primary">{value}</span>,
+    format: (value) => <span className="text-blue-600 dark:text-blue-400 font-semibold">{value}</span>,
   },
   { key: "matches", header: "Matches" },
   {
@@ -57,14 +57,20 @@ const columns: Column<SeasonStatsType>[] = [
   {
     key: "eloGain",
     header: "ELO Gain",
-    format: (value) => <span className="text-blue-600 dark:text-blue-400 font-medium">+{value}</span>,
+    format: (value) => (
+      <span className="font-medium">{value}</span>
+    ),
   },
   {
     key: "eloPerMatch",
     header: "ELO/Match",
     format: (value) => (value as number).toFixed(1),
   },
-  { key: "bansFor800Elo", header: "Bans" },
+  {
+    key: "bansFor800Elo",
+    header: "Bans",
+    format: (value) => (value ? <span className="text-orange-600 dark:text-orange-400 font-medium">{value}</span> : "-"),
+  },
 ]
 
 const SeasonStats: React.FC<SeasonStatsProps> = ({ seasonData }) => {

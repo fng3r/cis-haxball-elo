@@ -38,7 +38,7 @@ const Home: React.FC = () => {
             maxMatchesPerSeason: Math.max(existing.maxMatchesPerSeason, matches),
             maxWinsPerSeason: Math.max(existing.maxWinsPerSeason, wins),
             maxLossesPerSeason: Math.max(existing.maxLossesPerSeason, losses),
-            totalBans: existing.totalBans + bansFor800Elo,
+            totalBans: existing.totalBans + (bansFor800Elo || 0),
           }
         } else {
           playerStats[nickname] = {
@@ -59,7 +59,7 @@ const Home: React.FC = () => {
             maxMatchesPerSeason: matches,
             maxWinsPerSeason: wins,
             maxLossesPerSeason: losses,
-            totalBans: bansFor800Elo,
+            totalBans: bansFor800Elo || 0,
           }
         }
       })
