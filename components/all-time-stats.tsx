@@ -83,12 +83,14 @@ const columns: ColumnDef<AllTimeStatsType>[] = [
   {
     accessorKey: "bestStreak",
     header: "Best Streak",
+    cell: ({ row }) => <span className="font-medium">{`${row.original.bestStreak}W`}</span>,
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
     accessorKey: "worstStreak",
     header: "Worst Streak",
+    cell: ({ row }) => <span className="font-medium">{`${row.original.worstStreak}L`}</span>,
     enableSorting: true,
     enableColumnFilter: true,
   },

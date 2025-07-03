@@ -69,12 +69,14 @@ const columns: ColumnDef<SeasonStatsType>[] = [
   {
     accessorKey: "highestWinstreak",
     header: "Best Streak",
+    cell: ({ row }) => <span className="font-medium">{`${row.original.highestWinstreak}W`}</span>,
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
     accessorKey: "highestLosestreak",
     header: "Worst Streak",
+    cell: ({ row }) => <span className="font-medium">{`${row.original.highestLosestreak}L`}</span>,
     enableSorting: true,
     enableColumnFilter: true,
   },
