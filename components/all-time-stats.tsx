@@ -1,125 +1,134 @@
 import type React from "react"
 import type { AllTimeStatsType } from "@/types/types"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { DataTable } from "@/components/ui/data-table"
+import { ColumnDef } from "@tanstack/react-table"
 
 interface AllTimeStatsProps {
   allTimeData: AllTimeStatsType[]
 }
 
-type Column<T> = {
-  key: keyof T
-  header: string
-  format?: (value: T[keyof T], row: T) => React.ReactNode
-}
-
-const columns: Column<AllTimeStatsType>[] = [
+const columns: ColumnDef<AllTimeStatsType>[] = [
   {
-    key: "rank",
+    accessorKey: "rank",
     header: "Rank",
-    format: (value, row) => (
-      <Badge variant={row.rank <= 3 ? "default" : "secondary"} className="font-bold">
-        #{value}
+    cell: ({ row }) => (
+      <Badge variant={row.original.rank <= 3 ? "default" : "secondary"} className="font-bold">
+        #{row.original.rank}
       </Badge>
     ),
+    enableSorting: true,
   },
-  { key: "player", header: "Player" },
   {
-    key: "totalSeasons",
+    accessorKey: "player",
+    header: "Player",
+    enableSorting: false,
+  },
+  {
+    accessorKey: "totalSeasons",
     header: "Seasons",
-    format: (value) => <Badge variant="outline">{value}</Badge>,
+    cell: ({ row }) => <Badge variant="outline">{row.original.totalSeasons}</Badge>,
+    enableSorting: true,
   },
   {
-    key: "totalEloGain",
+    accessorKey: "totalEloGain",
     header: "Total ELO Gain",
-    format: (value) => <span className="text-blue-600 dark:text-blue-400 font-semibold">{value}</span>,
+    cell: ({ row }) => <span className="text-blue-600 dark:text-blue-400 font-semibold">{row.original.totalEloGain}</span>,
+    enableSorting: true,
   },
   {
-    key: "totalElo",
+    accessorKey: "totalElo",
     header: "Total ELO",
-    format: (value) => <span className="text-primary">{value}</span>,
+    cell: ({ row }) => <span className="text-primary">{row.original.totalElo}</span>,
+    enableSorting: true,
   },
-  { key: "matches", header: "Matches" },
   {
-    key: "wins",
+    accessorKey: "matches",
+    header: "Matches",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "wins",
     header: "Wins",
-    format: (value) => <span className="text-green-600 dark:text-green-400 font-medium">{value}</span>,
+    cell: ({ row }) => <span className="text-green-600 dark:text-green-400 font-medium">{row.original.wins}</span>,
+    enableSorting: true,
   },
   {
-    key: "losses",
+    accessorKey: "losses",
     header: "Losses",
-    format: (value) => <span className="text-red-600 dark:text-red-400 font-medium">{value}</span>,
+    cell: ({ row }) => <span className="text-red-600 dark:text-red-400 font-medium">{row.original.losses}</span>,
+    enableSorting: true,
   },
   {
-    key: "winrate",
+    accessorKey: "winrate",
     header: "Winrate",
-    format: (value) => {
-      const rate = (value as number) * 100
-      const color =
-        rate >= 50
-          ? "text-green-600 dark:text-green-400"
-          : "text-red-600 dark:text-red-400"
+    cell: ({ row }) => {
+      const rate = row.original.winrate * 100
+      const color = rate >= 50 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
       return <span className={`font-medium ${color}`}>{rate.toFixed(2)}%</span>
     },
+    enableSorting: true,
   },
-  { key: "bestStreak", header: "Best Streak" },
-  { key: "worstStreak", header: "Worst Streak" },
   {
-    key: "avgEloPerMatch",
+    accessorKey: "bestStreak",
+    header: "Best Streak",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "worstStreak",
+    header: "Worst Streak",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "avgEloPerMatch",
     header: "Avg ELO/Match",
-    format: (v) => (v as number).toFixed(1),
+    cell: ({ row }) => (row.original.avgEloPerMatch as number).toFixed(1),
+    enableSorting: true,
   },
   {
-    key: "avgMatchesPerSeason",
+    accessorKey: "avgMatchesPerSeason",
     header: "Avg Matches/Season",
-    format: (v) => (v as number).toFixed(0),
+    cell: ({ row }) => (row.original.avgMatchesPerSeason as number).toFixed(0),
+    enableSorting: true,
   },
   {
-    key: "avgWinsPerSeason",
+    accessorKey: "avgWinsPerSeason",
     header: "Avg Wins/Season",
-    format: (v) => (v as number).toFixed(0),
+    cell: ({ row }) => (row.original.avgWinsPerSeason as number).toFixed(0),
+    enableSorting: true,
   },
   {
-    key: "avgLossesPerSeason",
+    accessorKey: "avgLossesPerSeason",
     header: "Avg Losses/Season",
-    format: (v) => (v as number).toFixed(0),
+    cell: ({ row }) => (row.original.avgLossesPerSeason as number).toFixed(0),
+    enableSorting: true,
   },
-  { key: "maxMatchesPerSeason", header: "Max Matches/Season" },
-  { key: "maxWinsPerSeason", header: "Max Wins/Season" },
-  { key: "maxLossesPerSeason", header: "Max Losses/Season" },
   {
-    key: "totalBans",
+    accessorKey: "maxMatchesPerSeason",
+    header: "Max Matches/Season",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "maxWinsPerSeason",
+    header: "Max Wins/Season",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "maxLossesPerSeason",
+    header: "Max Losses/Season",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "totalBans",
     header: "Total Bans",
-    format: (value) => (value ? <span className="text-orange-600 dark:text-orange-400 font-medium">{value}</span> : "-"),
+    cell: ({ row }) => row.original.totalBans ? <span className="text-orange-600 dark:text-orange-400 font-medium">{row.original.totalBans}</span> : "-",
+    enableSorting: true,
   },
 ]
 
 const AllTimeStats: React.FC<AllTimeStatsProps> = ({ allTimeData }) => {
   return (
-    <div className="w-full overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={String(col.key)} className="font-semibold">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {allTimeData.map((row, index) => (
-            <TableRow key={row.player} className={index < 3 ? "bg-muted/50" : ""}>
-              {columns.map((col) => {
-                const raw = row[col.key]
-                const rendered = col.format ? col.format(raw, row) : raw
-                return <TableCell key={`${row.player}-${String(col.key)}`}>{rendered}</TableCell>
-              })}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <DataTable columns={columns} data={allTimeData} filterColumn="player" filterPlaceholder="Filter players..." />
   )
 }
 

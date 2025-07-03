@@ -1,104 +1,95 @@
 import type React from "react"
 import type { SeasonStatsType } from "@/types/types"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
+import { DataTable } from "@/components/ui/data-table"
+import { ColumnDef } from "@tanstack/react-table"
 
 interface SeasonStatsProps {
   seasonData: SeasonStatsType[]
 }
 
-type Column<T> = {
-  key: keyof T
-  header: string
-  format?: (value: T[keyof T], row: T) => React.ReactNode
-}
-
-const columns: Column<SeasonStatsType>[] = [
+const columns: ColumnDef<SeasonStatsType>[] = [
   {
-    key: "rank",
+    accessorKey: "rank",
     header: "Rank",
-    format: (value, row) => (
-      <Badge variant={row.rank <= 3 ? "default" : "secondary"} className="font-bold">
-        #{value}
+    cell: ({ row }) => (
+      <Badge variant={row.original.rank <= 3 ? "default" : "secondary"} className="font-bold">
+        #{row.original.rank}
       </Badge>
     ),
+    enableSorting: true,
   },
-  { key: "nickname", header: "Player" },
   {
-    key: "elo",
+    accessorKey: "nickname",
+    header: "Player",
+    enableSorting: false,
+  },
+  {
+    accessorKey: "elo",
     header: "ELO",
-    format: (value) => <span className="text-blue-600 dark:text-blue-400 font-semibold">{value}</span>,
+    cell: ({ row }) => <span className="text-blue-600 dark:text-blue-400 font-semibold">{row.original.elo}</span>,
+    enableSorting: true,
   },
-  { key: "matches", header: "Matches" },
   {
-    key: "wins",
+    accessorKey: "matches",
+    header: "Matches",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "wins",
     header: "Wins",
-    format: (value) => <span className="text-green-600 dark:text-green-400 font-medium">{value}</span>,
+    cell: ({ row }) => <span className="text-green-600 dark:text-green-400 font-medium">{row.original.wins}</span>,
+    enableSorting: true,
   },
   {
-    key: "losses",
+    accessorKey: "losses",
     header: "Losses",
-    format: (value) => <span className="text-red-600 dark:text-red-400 font-medium">{value}</span>,
+    cell: ({ row }) => <span className="text-red-600 dark:text-red-400 font-medium">{row.original.losses}</span>,
+    enableSorting: true,
   },
   {
-    key: "winrate",
+    accessorKey: "winrate",
     header: "Winrate",
-    format: (value) => {
-      const rate = (value as number) * 100
-      const color =
-        rate >= 50
-          ? "text-green-600 dark:text-green-400"
-          : "text-red-600 dark:text-red-400"
+    cell: ({ row }) => {
+      const rate = row.original.winrate * 100
+      const color = rate >= 50 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
       return <span className={`font-medium ${color}`}>{rate.toFixed(1)}%</span>
     },
+    enableSorting: true,
   },
-  { key: "highestWinstreak", header: "Best Streak" },
-  { key: "highestLosestreak", header: "Worst Streak" },
   {
-    key: "eloGain",
+    accessorKey: "highestWinstreak",
+    header: "Best Streak",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "highestLosestreak",
+    header: "Worst Streak",
+    enableSorting: true,
+  },
+  {
+    accessorKey: "eloGain",
     header: "ELO Gain",
-    format: (value) => (
-      <span className="font-medium">{value}</span>
-    ),
+    cell: ({ row }) => <span className="font-medium">{row.original.eloGain}</span>,
+    enableSorting: true,
   },
   {
-    key: "eloPerMatch",
+    accessorKey: "eloPerMatch",
     header: "ELO/Match",
-    format: (value) => (value as number).toFixed(1),
+    cell: ({ row }) => (row.original.eloPerMatch as number).toFixed(1),
+    enableSorting: true,
   },
   {
-    key: "bansFor800Elo",
+    accessorKey: "bansFor800Elo",
     header: "Bans",
-    format: (value) => (value ? <span className="text-orange-600 dark:text-orange-400 font-medium">{value}</span> : "-"),
+    cell: ({ row }) => row.original.bansFor800Elo ? <span className="text-orange-600 dark:text-orange-400 font-medium">{row.original.bansFor800Elo}</span> : "-",
+    enableSorting: true,
   },
 ]
 
 const SeasonStats: React.FC<SeasonStatsProps> = ({ seasonData }) => {
   return (
-    <div className="w-full overflow-x-auto">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={String(col.key)} className="font-semibold">
-                {col.header}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {seasonData.map((row, index) => (
-            <TableRow key={row.nickname} className={index < 3 ? "bg-muted/50" : ""}>
-              {columns.map((col) => {
-                const raw = row[col.key]
-                const rendered = col.format ? col.format(raw, row) : raw
-                return <TableCell key={`${row.nickname}-${String(col.key)}`}>{rendered}</TableCell>
-              })}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <DataTable columns={columns} data={seasonData} filterColumn="nickname" filterPlaceholder="Filter players..." />
   )
 }
 

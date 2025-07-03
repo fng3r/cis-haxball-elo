@@ -102,7 +102,7 @@ const Home: React.FC = () => {
                 <TabsTrigger value="alltime">All-Time Statistics</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="season" className="space-y-4">
+              <TabsContent value="season" className="space-y-2">
                 <div className="flex items-center space-x-4">
                   <Label htmlFor="season-select" className="text-sm font-medium">
                     Select Season:
