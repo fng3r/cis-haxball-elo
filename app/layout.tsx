@@ -9,7 +9,8 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "CIS-HAXBALL ELO",
   description: "CIS-HAXBALL ELO Leaderboard",
-  generator: 'v0.dev'
+  icons: "/cis-logo.png",
+  generator: "v0.dev",
 }
 
 export default function RootLayout({
