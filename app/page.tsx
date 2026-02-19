@@ -15,7 +15,7 @@ import { Trophy } from "lucide-react"
 
 const Home: React.FC = () => {
   const seasonOptions = useMemo(() => Object.keys(data), [])
-  const [selectedSeason, setSelectedSeason] = useState(seasonOptions[0])
+  const [selectedSeason, setSelectedSeason] = useState(seasonOptions[seasonOptions.length - 1])
 
   const allTimeData: AllTimeStatsType[] = useMemo(() => {
     const playerStats: { [key: string]: AllTimeStatsType } = {}
