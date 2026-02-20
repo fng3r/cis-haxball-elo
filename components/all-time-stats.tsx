@@ -149,10 +149,8 @@ const columns: ColumnDef<AllTimeStatsType>[] = [
   },
 ]
 
-const AllTimeStats: React.FC<AllTimeStatsProps> = ({ allTimeData }) => {
+export default function AllTimeStats(props: AllTimeStatsProps) {
   return (
-    <DataTable columns={columns} data={allTimeData} filterColumn="player" filterPlaceholder="Find player by name" />
+    <DataTable columns={columns} data={props.allTimeData} filterColumn="player" filterPlaceholder="Find player by name" />
   )
 }
-
-export default AllTimeStats
