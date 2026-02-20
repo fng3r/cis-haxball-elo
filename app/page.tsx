@@ -4,24 +4,28 @@ import type React from "react"
 import { useMemo, useState } from "react"
 import SeasonStats from "@/components/season-stats"
 import AllTimeStats from "@/components/all-time-stats"
+import { SeasonStatsCards, AllTimeStatsCards } from "@/components/season-stats-cards"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { ThemeToggle } from "@/components/theme-toggle"
-import data from "@/seasonStats"
-import type { SeasonStatsType, AllTimeStatsType } from "@/types/types"
+import data from "@/seasonStats.json"
+import type { SeasonStatsType, AllTimeStatsType, SeasonDataWithMeta } from "@/types/types"
 import { Label } from "@/components/ui/label"
 import { Trophy } from "lucide-react"
 
+const seasonData = data as Record<string, SeasonDataWithMeta>
+
 const Home: React.FC = () => {
-  const seasonOptions = useMemo(() => Object.keys(data), [])
+  const seasonOptions = useMemo(() => Object.keys(seasonData), [])
   const [selectedSeason, setSelectedSeason] = useState(seasonOptions[seasonOptions.length - 1])
 
   const allTimeData: AllTimeStatsType[] = useMemo(() => {
     const playerStats: { [key: string]: AllTimeStatsType } = {}
 
-    for (const season in data) {
-      data[season].forEach((player: SeasonStatsType) => {
+    for (const seasonKey in seasonData) {
+      const season = seasonData[seasonKey]
+      season.stats.forEach((player: SeasonStatsType) => {
         const { nickname, elo, eloGain, matches, wins, losses, highestWinstreak, highestLosestreak, bansFor800Elo } =
           player
 
@@ -81,10 +85,35 @@ const Home: React.FC = () => {
     }))
   }, [])
 
+  const totalSeasonsCount = useMemo(() => {
+    const numbers = Object.values(seasonData).map((s) => s.seasonNumber)
+    return new Set(numbers).size
+  }, [])
+
+  const allTimeGamesCount = useMemo(() => {
+    let totalMatches = 0
+    for (const seasonKey in seasonData) {
+      for (const player of seasonData[seasonKey].stats) {
+        totalMatches += player.matches
+      }
+    }
+    return Math.floor(totalMatches / 8)
+  }, [])
+
+  const selectedSeasonMeta = seasonData[selectedSeason]
+  const seasonGamesCount = useMemo(() => {
+    const totalMatches = selectedSeasonMeta.stats.reduce((sum, p) => sum + p.matches, 0)
+    return Math.floor(totalMatches / 8)
+  }, [selectedSeasonMeta.stats])
+  const seasonPlayersWithMinGames = useMemo(
+    () => selectedSeasonMeta.stats.filter((p) => p.matches >= 20).length,
+    [selectedSeasonMeta.stats]
+  )
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8 px-4">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-2">
           <div>
             <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
               <Trophy className="h-8 w-8 text-yellow-400 dark:text-yellow-500" />
@@ -102,7 +131,7 @@ const Home: React.FC = () => {
                 <TabsTrigger value="alltime">All-Time Statistics</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="season" className="space-y-2">
+              <TabsContent value="season" className="space-y-4 mt-2">
                 <div className="flex items-center space-x-4">
                   <Label htmlFor="season-select" className="text-sm font-medium">
                     Select Season:
@@ -120,10 +149,21 @@ const Home: React.FC = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <SeasonStats seasonData={data[selectedSeason]} />
+                <SeasonStatsCards
+                  seasonNumber={selectedSeasonMeta.seasonNumber}
+                  gamesCount={seasonGamesCount}
+                  playersCount={selectedSeasonMeta.stats.length}
+                  playersWithMinGamesCount={seasonPlayersWithMinGames}
+                />
+                <SeasonStats seasonData={selectedSeasonMeta.stats} />
               </TabsContent>
 
-              <TabsContent value="alltime">
+              <TabsContent value="alltime" className="space-y-4 mt-4">
+                <AllTimeStatsCards
+                  totalSeasonsCount={totalSeasonsCount}
+                  gamesCount={allTimeGamesCount}
+                  playersCount={allTimeData.length}
+                />
                 <AllTimeStats allTimeData={allTimeData} />
               </TabsContent>
             </Tabs>

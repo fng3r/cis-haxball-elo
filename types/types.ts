@@ -14,6 +14,24 @@ export type SeasonStatsType = {
   bansFor800Elo: number
 }
 
+export type SeasonDataWithMeta = {
+  seasonNumber: number
+  stats: SeasonStatsType[]
+}
+
+export type SeasonStatsCardsProps = {
+  seasonNumber: number
+  gamesCount: number
+  playersCount: number
+  playersWithMinGamesCount: number
+}
+
+export type AllTimeStatsCardsProps = {
+  totalSeasonsCount: number
+  gamesCount: number
+  playersCount: number
+}
+
 export type AllTimeStatsType = {
   rank: number
   player: string
