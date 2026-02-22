@@ -1,7 +1,6 @@
-import type React from "react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import type { SeasonStatsCardsProps, AllTimeStatsCardsProps } from "@/types/types"
-import { Hash, Users, UsersRound, Gamepad2 } from "lucide-react"
+import type { AllTimeStatsCardsProps, SeasonStatsCardsProps } from "@/types/types"
+import { Gamepad2, Hash, Users, UsersRound } from "lucide-react"
 
 export function SeasonStatsCards(props: SeasonStatsCardsProps) {
   return (

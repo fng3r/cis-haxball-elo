@@ -1,30 +1,27 @@
 "use client"
 
-import * as React from "react"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
+  AccessorKeyColumnDef,
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  SortingState,
-  useReactTable,
-  VisibilityState,
-  ColumnFiltersState,
   Header,
   Row,
-  AccessorFnColumnDef,
-  AccessorFnColumnDefBase,
-  AccessorKeyColumnDefBase,
-  AccessorKeyColumnDef,
+  SortingState,
+  useReactTable,
+  VisibilityState
 } from "@tanstack/react-table"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { ChevronDown, ArrowUpDown, ArrowUp, ArrowDown, Filter as FilterIcon, Filter as FilterIconFilled, X } from "lucide-react"
-import { useState, useRef } from "react"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, Filter as FilterIcon, Filter as FilterIconFilled, X } from "lucide-react"
+import * as React from "react"
+import { useState } from "react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

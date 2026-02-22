@@ -1,7 +1,6 @@
-import type React from "react"
-import type { AllTimeStatsType } from "@/types/types"
 import { Badge } from "@/components/ui/badge"
 import { DataTable } from "@/components/ui/data-table"
+import type { AllTimeStatsType } from "@/types/types"
 import { ColumnDef } from "@tanstack/react-table"
 
 interface AllTimeStatsProps {

@@ -1,8 +1,8 @@
-import type React from "react"
-import type { SeasonStatsType } from "@/types/types"
 import { Badge } from "@/components/ui/badge"
 import { DataTable } from "@/components/ui/data-table"
+import type { SeasonStatsType } from "@/types/types"
 import { ColumnDef } from "@tanstack/react-table"
+import type React from "react"
 
 interface SeasonStatsProps {
   seasonData: SeasonStatsType[]
