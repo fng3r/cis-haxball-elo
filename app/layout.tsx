@@ -1,3 +1,4 @@
+import { AppSidebar } from "@/components/app-sidebar"
 import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
 import { Inter } from "next/font/google"
@@ -22,7 +23,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <AppSidebar>{children}</AppSidebar>
         </ThemeProvider>
       </body>
     </html>
