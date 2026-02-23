@@ -1,5 +1,4 @@
 import { AllSeasonsView } from "@/components/all-seasons-view"
-import { PageTitle } from "@/contexts/page-title-context"
 import data from "@/seasonStats.json"
 import type { SeasonDataWithMeta } from "@/types/types"
 
@@ -15,12 +14,10 @@ export default function SeasonPage() {
   const seasons = seasonKeys.map((key) => ({ key, data: seasonData[key] }))
 
   return (
-    <PageTitle title="Seasons">
-      <div className="min-h-screen bg-background">
-        <div className="w-full">
-          <AllSeasonsView seasons={seasons} />
-        </div>
+    <div className="min-h-screen bg-background">
+      <div className="w-full">
+        <AllSeasonsView seasons={seasons} />
       </div>
-    </PageTitle>
+    </div>
   )
 }

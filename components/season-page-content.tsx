@@ -76,7 +76,7 @@ export function SeasonPageContent({ seasonLabel, stats }: SeasonPageContentProps
   }
 
   return (
-    <div aria-labelledby={`season-${seasonLabel.replace(/\s/g, "-")}`}>
+    <div className="flex flex-col gap-4" aria-labelledby={`season-${seasonLabel.replace(/\s/g, "-")}`}>
       <h2 id={`season-${seasonLabel.replace(/\s/g, "-")}`} className="sr-only">
         {seasonLabel}
       </h2>
@@ -110,7 +110,7 @@ export function SeasonPageContent({ seasonLabel, stats }: SeasonPageContentProps
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Season stats</h3>
+        <h3 className="text-lg font-semibold">📊 Season stats</h3>
         <div className="grid gap-4 sm:grid-cols-3">
           <StatCard title="Most matches" leaders={mostMatches} />
           <StatCard title="Most wins" leaders={mostWins} />

@@ -1,6 +1,5 @@
 import { AppHeader } from "@/components/app-header"
 import { AppSidebar } from "@/components/app-sidebar"
-import { PageTitleProvider } from "@/contexts/page-title-context"
 import type { Metadata } from "next"
 import { ThemeProvider } from "next-themes"
 import { Inter } from "next/font/google"
@@ -25,14 +24,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <PageTitleProvider>
-              <div className="max-w-7xl mx-auto px-4 pb-6 flex flex-1 flex-col">
-                <AppSidebar>
-                  <AppHeader />
-                  {children}
-                </AppSidebar>
-              </div>
-          </PageTitleProvider>
+          <div className="max-w-7xl mx-auto px-4 pb-6 flex flex-1 flex-col">
+            <AppSidebar>
+              <AppHeader />
+              {children}
+            </AppSidebar>
+          </div>
         </ThemeProvider>
       </body>
     </html>
