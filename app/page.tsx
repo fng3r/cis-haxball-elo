@@ -3,14 +3,12 @@
 import AllTimeStats from "@/components/all-time-stats"
 import SeasonStats from "@/components/season-stats"
 import { AllTimeStatsCards, SeasonStatsCards } from "@/components/season-stats-cards"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import data from "@/seasonStats.json"
 import type { AllTimeStatsType, SeasonDataWithMeta, SeasonStatsType } from "@/types/types"
-import { Trophy } from "lucide-react"
 import type React from "react"
 import { useMemo, useState } from "react"
 
@@ -112,17 +110,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4">
-        <div className="flex justify-between items-center mb-2">
-          <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
-              <Trophy className="h-8 w-8 text-yellow-400 dark:text-yellow-500" />
-              CIS ELO Leaderboard
-            </h1>
-          </div>
-          <ThemeToggle />
-        </div>
-
+      <div className="w-full">
         <Card>
           <CardContent className="p-6">
             <Tabs defaultValue="season" className="w-full">
