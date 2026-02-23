@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "CIS-HAXBALL ELO",
   description: "CIS-HAXBALL ELO Leaderboard",
-  icons: "/cis-logo.png",
+  icons: "/elo.png",
   generator: "v0.dev",
 }
 

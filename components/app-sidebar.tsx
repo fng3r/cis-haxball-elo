@@ -1,14 +1,14 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { Calendar, Trophy } from "lucide-react"
+import { BarChart3, Medal } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const NAV_ITEMS = [
-  { href: "/", icon: Trophy, label: "Leaderboard" },
-  { href: "/season", icon: Calendar, label: "Seasons" },
+  { href: "/", icon: BarChart3, label: "Stats" },
+  { href: "/leaders", icon: Medal, label: "Leaders" },
 ] as const
 
 export function AppSidebar({ children }: { children: React.ReactNode }) {

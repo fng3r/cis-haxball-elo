@@ -10,7 +10,7 @@ const seasonKeys = Object.keys(seasonData).sort((a, b) => {
   return a.localeCompare(b)
 })
 
-export default function SeasonPage() {
+export default function LeadersPage() {
   const seasons = seasonKeys.map((key) => ({ key, data: seasonData[key] }))
 
   return (
