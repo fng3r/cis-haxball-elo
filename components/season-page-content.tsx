@@ -10,6 +10,7 @@ import {
   getMostMatches,
   getMostWins,
 } from "@/lib/season-stats-leaders"
+import { cn } from "@/lib/utils"
 import type { SeasonStatsType } from "@/types/types"
 import { Trophy } from "lucide-react"
 import Image from "next/image"
@@ -29,10 +30,12 @@ function StatCard({
   title,
   leaders,
   valueFormat = (v) => String(v),
+  valueClassName,
 }: {
   title: string
   leaders: StatLeader[]
   valueFormat?: (v: number) => string
+  valueClassName?: string
 }) {
   if (leaders.length === 0) return null
   const value = valueFormat(leaders[0].value)
@@ -40,7 +43,7 @@ function StatCard({
     <Card>
       <CardContent className="p-4">
         <p className="text-muted-foreground text-sm font-medium mb-1">{title}</p>
-        <p className="text-2xl font-bold tabular-nums mb-2">{value}</p>
+        <p className={cn("text-2xl font-bold tabular-nums mb-2", valueClassName)}>{value}</p>
         <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-sm">
           {leaders.map((l) => (
             <span key={l.nickname} className="font-medium">
@@ -112,23 +115,33 @@ export function SeasonPageContent({ seasonLabel, stats }: SeasonPageContentProps
       <div className="space-y-4">
         <h3 className="text-lg font-semibold">📊 Season stats</h3>
         <div className="grid gap-4 sm:grid-cols-3">
-          <StatCard title="Most matches" leaders={mostMatches} />
-          <StatCard title="Most wins" leaders={mostWins} />
-          <StatCard title="Most losses" leaders={mostLosses} />
+          <StatCard title="Most matches" leaders={mostMatches} valueClassName="text-amber-500 dark:text-amber-300" />
+          <StatCard title="Most wins" leaders={mostWins} valueClassName="text-emerald-600 dark:text-emerald-400" />
+          <StatCard title="Most losses" leaders={mostLosses} valueClassName="text-rose-600 dark:text-rose-400" />
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard
             title="Highest winrate (≥20 matches)"
             leaders={highestWinrate}
             valueFormat={formatWinrate}
+            valueClassName="text-green-600 dark:text-green-400"
           />
           <StatCard
             title="Lowest winrate (≥20 matches)"
             leaders={lowestWinrate}
             valueFormat={formatWinrate}
+            valueClassName="text-red-600 dark:text-red-400"
           />
-          <StatCard title="Highest winstreak" leaders={highestWinstreak} />
-          <StatCard title="Highest losestreak" leaders={highestLosestreak} />
+          <StatCard
+            title="Highest winstreak"
+            leaders={highestWinstreak}
+            valueClassName="text-green-600 dark:text-green-400"
+          />
+          <StatCard
+            title="Highest losestreak"
+            leaders={highestLosestreak}
+            valueClassName="text-red-600 dark:text-red-400"
+          />
         </div>
       </div>
     </div>

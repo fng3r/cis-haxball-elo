@@ -6,8 +6,8 @@ const seasonData = data as Record<string, SeasonDataWithMeta>
 const seasonKeys = Object.keys(seasonData).sort((a, b) => {
   const na = seasonData[a].seasonNumber
   const nb = seasonData[b].seasonNumber
-  if (na !== nb) return na - nb
-  return a.localeCompare(b)
+  if (na !== nb) return nb - na
+  return b.localeCompare(a)
 })
 
 export default function LeadersPage() {
