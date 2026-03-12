@@ -44,9 +44,10 @@ function StatCard({
       <CardContent className="p-4">
         <p className="text-muted-foreground text-sm font-medium mb-1">{title}</p>
         <p className={cn("text-2xl font-bold tabular-nums mb-2", valueClassName)}>{value}</p>
-        <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-sm">
-          {leaders.map((l) => (
-            <span key={l.nickname} className="font-medium">
+        <div className="text-sm font-medium">
+          {leaders.map((l, index) => (
+            <span key={l.nickname}>
+              {index > 0 ? " • " : ""}
               {l.nickname}
             </span>
           ))}
