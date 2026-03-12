@@ -3,11 +3,13 @@
 import AllTimeStats from "@/components/all-time-stats"
 import SeasonStats from "@/components/season-stats"
 import { AllTimeStatsCards, SeasonStatsCards } from "@/components/season-stats-cards"
+import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import data from "@/seasonStats.json"
 import type { AllTimeStatsType, SeasonDataWithMeta, SeasonStatsType } from "@/types/types"
+import { ImageIcon } from "lucide-react"
 import type React from "react"
 import { useMemo, useState } from "react"
 
@@ -106,6 +108,7 @@ const Home: React.FC = () => {
     () => selectedSeasonMeta.stats.filter((p) => p.matches >= 20).length,
     [selectedSeasonMeta.stats]
   )
+  const seasonOverviewImageHref = `/api/season-overview-image/${encodeURIComponent(selectedSeason)}`
 
   return (
     <div className="min-h-screen bg-background">
@@ -116,22 +119,30 @@ const Home: React.FC = () => {
         </TabsList>
 
         <TabsContent value="season" className="space-y-4 mt-2">
-          <div className="flex items-center space-x-4">
-            <Label htmlFor="season-select" className="text-sm font-medium">
-              Select Season:
-            </Label>
-            <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select a season" />
-              </SelectTrigger>
-              <SelectContent>
-                {seasonOptions.map((season) => (
-                  <SelectItem key={season} value={season}>
-                    {season}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center space-x-4">
+              <Label htmlFor="season-select" className="text-sm font-medium">
+                Select Season:
+              </Label>
+              <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a season" />
+                </SelectTrigger>
+                <SelectContent>
+                  {seasonOptions.map((season) => (
+                    <SelectItem key={season} value={season}>
+                      {season}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button asChild variant="outline">
+              <a href={seasonOverviewImageHref} target="_blank" rel="noreferrer">
+                <ImageIcon />
+                Open overview image
+              </a>
+            </Button>
           </div>
           <SeasonStatsCards
             seasonNumber={selectedSeasonMeta.seasonNumber}
