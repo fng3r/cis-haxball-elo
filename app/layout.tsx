@@ -1,15 +1,17 @@
-import type React from "react"
+import { AppHeader } from "@/components/app-header"
+import { AppSidebar } from "@/components/app-sidebar"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
 import { ThemeProvider } from "next-themes"
+import { Inter } from "next/font/google"
+import type React from "react"
+import "./globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "CIS-HAXBALL ELO",
   description: "CIS-HAXBALL ELO Leaderboard",
-  icons: "/cis-logo.png",
+  icons: "/elo.png",
   generator: "v0.dev",
 }
 
@@ -22,7 +24,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <div className="max-w-7xl mx-auto px-4 pb-6 flex flex-1 flex-col">
+            <AppSidebar>
+              <AppHeader />
+              {children}
+            </AppSidebar>
+          </div>
         </ThemeProvider>
       </body>
     </html>

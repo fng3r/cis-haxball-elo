@@ -1,18 +1,15 @@
 "use client"
 
+import AllTimeStats from "@/components/all-time-stats"
+import SeasonStats from "@/components/season-stats"
+import { AllTimeStatsCards, SeasonStatsCards } from "@/components/season-stats-cards"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import data from "@/seasonStats.json"
+import type { AllTimeStatsType, SeasonDataWithMeta, SeasonStatsType } from "@/types/types"
 import type React from "react"
 import { useMemo, useState } from "react"
-import SeasonStats from "@/components/season-stats"
-import AllTimeStats from "@/components/all-time-stats"
-import { SeasonStatsCards, AllTimeStatsCards } from "@/components/season-stats-cards"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent } from "@/components/ui/card"
-import { ThemeToggle } from "@/components/theme-toggle"
-import data from "@/seasonStats.json"
-import type { SeasonStatsType, AllTimeStatsType, SeasonDataWithMeta } from "@/types/types"
-import { Label } from "@/components/ui/label"
-import { Trophy } from "lucide-react"
 
 const seasonData = data as Record<string, SeasonDataWithMeta>
 
@@ -112,64 +109,48 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4">
-        <div className="flex justify-between items-center mb-2">
-          <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
-              <Trophy className="h-8 w-8 text-yellow-400 dark:text-yellow-500" />
-              CIS ELO Leaderboard
-            </h1>
+      <Tabs defaultValue="season" className="w-full">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="season">Season Statistics</TabsTrigger>
+          <TabsTrigger value="alltime">All-Time Statistics</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="season" className="space-y-4 mt-2">
+          <div className="flex items-center space-x-4">
+            <Label htmlFor="season-select" className="text-sm font-medium">
+              Select Season:
+            </Label>
+            <Select value={selectedSeason} onValueChange={setSelectedSeason}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select a season" />
+              </SelectTrigger>
+              <SelectContent>
+                {seasonOptions.map((season) => (
+                  <SelectItem key={season} value={season}>
+                    {season}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <ThemeToggle />
-        </div>
+          <SeasonStatsCards
+            seasonNumber={selectedSeasonMeta.seasonNumber}
+            gamesCount={seasonGamesCount}
+            playersCount={selectedSeasonMeta.stats.length}
+            playersWithMinGamesCount={seasonPlayersWithMinGames}
+          />
+          <SeasonStats seasonData={selectedSeasonMeta.stats} />
+        </TabsContent>
 
-        <Card>
-          <CardContent className="p-6">
-            <Tabs defaultValue="season" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="season">Season Statistics</TabsTrigger>
-                <TabsTrigger value="alltime">All-Time Statistics</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="season" className="space-y-4 mt-2">
-                <div className="flex items-center space-x-4">
-                  <Label htmlFor="season-select" className="text-sm font-medium">
-                    Select Season:
-                  </Label>
-                  <Select value={selectedSeason} onValueChange={setSelectedSeason}>
-                    <SelectTrigger className="w-[180px]">
-                      <SelectValue placeholder="Select a season" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {seasonOptions.map((season) => (
-                        <SelectItem key={season} value={season}>
-                          {season}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <SeasonStatsCards
-                  seasonNumber={selectedSeasonMeta.seasonNumber}
-                  gamesCount={seasonGamesCount}
-                  playersCount={selectedSeasonMeta.stats.length}
-                  playersWithMinGamesCount={seasonPlayersWithMinGames}
-                />
-                <SeasonStats seasonData={selectedSeasonMeta.stats} />
-              </TabsContent>
-
-              <TabsContent value="alltime" className="space-y-4 mt-4">
-                <AllTimeStatsCards
-                  totalSeasonsCount={totalSeasonsCount}
-                  gamesCount={allTimeGamesCount}
-                  playersCount={allTimeData.length}
-                />
-                <AllTimeStats allTimeData={allTimeData} />
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
+        <TabsContent value="alltime" className="space-y-4 mt-4">
+          <AllTimeStatsCards
+            totalSeasonsCount={totalSeasonsCount}
+            gamesCount={allTimeGamesCount}
+            playersCount={allTimeData.length}
+          />
+          <AllTimeStats allTimeData={allTimeData} />
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

@@ -1,7 +1,6 @@
-import type React from "react"
-import type { AllTimeStatsType } from "@/types/types"
 import { Badge } from "@/components/ui/badge"
 import { DataTable } from "@/components/ui/data-table"
+import type { AllTimeStatsType } from "@/types/types"
 import { ColumnDef } from "@tanstack/react-table"
 
 interface AllTimeStatsProps {
@@ -12,13 +11,17 @@ const columns: ColumnDef<AllTimeStatsType>[] = [
   {
     accessorKey: "rank",
     header: "Rank",
-    cell: ({ row }) => (
-      <Badge variant={row.original.rank <= 3 ? "default" : "secondary"} className="font-bold">
-        #{row.original.rank}
-      </Badge>
-    ),
-    enableSorting: true,
-    enableColumnFilter: true,
+    cell: ({ row, table }) => {
+      const computedRank = table.getRowModel().rows.findIndex((currentRow) => currentRow.id === row.id) + 1
+
+      return (
+        <Badge variant={computedRank <= 3 ? "default" : "secondary"} className="font-bold">
+          #{computedRank}
+        </Badge>
+      )
+    },
+    enableSorting: false,
+    enableColumnFilter: false,
     enableHiding: false,
   },
   {
