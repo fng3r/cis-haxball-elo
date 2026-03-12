@@ -45,6 +45,21 @@ function getCisLogo(origin: string) {
   return `${origin}/cis-logo-full.png`
 }
 
+function getPublicOrigin(request: Request) {
+  const forwardedHost = request.headers.get("x-forwarded-host")
+  const forwardedProto = request.headers.get("x-forwarded-proto")
+
+  if (forwardedHost) {
+    return `${forwardedProto ?? "https"}://${forwardedHost}`
+  }
+
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`
+  }
+
+  return new URL(request.url).origin
+}
+
 function statCard(title: string, value: string, names: string, accent: string, subtitle?: string) {
   return (
     <div
@@ -98,7 +113,7 @@ export async function GET(request: Request, context: { params: Promise<{ season:
     const { season } = await context.params
     const seasonKey = decodeURIComponent(season)
     const selectedSeason = seasonData[seasonKey]
-    const origin = new URL(request.url).origin
+    const origin = getPublicOrigin(request)
 
     if (!selectedSeason) {
       return new Response("Season not found", { status: 404 })
