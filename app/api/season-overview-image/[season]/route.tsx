@@ -16,10 +16,7 @@ const seasonData = data as Record<string, SeasonDataWithMeta>
 
 export const runtime = "edge"
 
-const regularFontPromise = fetch(new URL("./fonts/DejaVuSans.ttf", import.meta.url)).then((response) =>
-  response.arrayBuffer()
-)
-const boldFontPromise = fetch(new URL("./fonts/DejaVuSans-Bold.ttf", import.meta.url)).then((response) =>
+const fontPromise = fetch(new URL("./fonts/DejaVuSans-OverviewSubset.woff", import.meta.url)).then((response) =>
   response.arrayBuffer()
 )
 
@@ -117,7 +114,7 @@ function statCard(title: string, value: string, names: string, accent: string, s
 
 export async function GET(request: Request, context: { params: Promise<{ season: string }> }) {
   try {
-    const [regularFontData, boldFontData] = await Promise.all([regularFontPromise, boldFontPromise])
+    const fontData = await fontPromise
     const { season } = await context.params
     const seasonKey = decodeURIComponent(season)
     const selectedSeason = seasonData[seasonKey]
@@ -331,15 +328,9 @@ export async function GET(request: Request, context: { params: Promise<{ season:
         fonts: [
           {
             name: "DejaVu Sans",
-            data: regularFontData,
+            data: fontData,
             style: "normal",
             weight: 400,
-          },
-          {
-            name: "DejaVu Sans",
-            data: boldFontData,
-            style: "normal",
-            weight: 700,
           },
         ],
       }
