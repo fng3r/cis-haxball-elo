@@ -134,12 +134,12 @@ export async function GET(request: Request, context: { params: Promise<{ season:
 
     const leaderGroups = [
       { title: "Most matches", leaders: getMostMatches(stats), format: (value: number) => String(value), accent: "#fde68a" },
-      { title: "Most wins", leaders: getMostWins(stats), format: (value: number) => String(value), accent: "#6ee7b7" },
-      { title: "Most losses", leaders: getMostLosses(stats), format: (value: number) => String(value), accent: "#fda4af" },
+      { title: "Most wins", leaders: getMostWins(stats), format: (value: number) => String(value), accent: "#4ade80" },
+      { title: "Most losses", leaders: getMostLosses(stats), format: (value: number) => String(value), accent: "#fb7185" },
       { title: "Highest winrate", subtitle: ">= 20 matches", leaders: getHighestWinrate(stats), format: formatWinrate, accent: "#4ade80" },
       { title: "Lowest winrate", subtitle: ">= 20 matches", leaders: getLowestWinrate(stats), format: formatWinrate, accent: "#fb7185" },
-      { title: "Highest winstreak", leaders: getHighestWinstreak(stats), format: (value: number) => `${value}W`, accent: "#34d399" },
-      { title: "Highest losestreak", leaders: getHighestLosestreak(stats), format: (value: number) => `${value}L`, accent: "#f87171" },
+      { title: "Highest winstreak", leaders: getHighestWinstreak(stats), format: (value: number) => `${value}W`, accent: "#4ade80" },
+      { title: "Highest losestreak", leaders: getHighestLosestreak(stats), format: (value: number) => `${value}L`, accent: "#fb7185" },
     ].filter((group) => group.leaders.length > 0)
 
     const leaderRows = [
