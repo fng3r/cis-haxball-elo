@@ -10,15 +10,12 @@ import {
 } from "@/lib/season-stats-leaders"
 import data from "@/seasonStats.json"
 import type { SeasonDataWithMeta, SeasonStatsType } from "@/types/types"
+import { readFile } from "node:fs/promises"
 import { ImageResponse } from "next/og"
 
 const seasonData = data as Record<string, SeasonDataWithMeta>
 
-export const runtime = "edge"
-
-const fontPromise = fetch(new URL("./fonts/DejaVuSans-OverviewSubset.woff", import.meta.url)).then((response) =>
-  response.arrayBuffer()
-)
+const fontPromise = readFile(new URL("./fonts/DejaVuSans-OverviewSubset.woff", import.meta.url))
 
 function formatWinrate(value: number) {
   return `${(value * 100).toFixed(1)}%`
