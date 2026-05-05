@@ -10,11 +10,12 @@ import {
 } from "@/lib/season-stats-leaders"
 import data from "@/seasonStats.json"
 import type { SeasonDataWithMeta, SeasonStatsType } from "@/types/types"
+import { readFile } from "node:fs/promises"
 import { ImageResponse } from "next/og"
 
 const seasonData = data as Record<string, SeasonDataWithMeta>
 
-export const runtime = "edge"
+const fontPromise = readFile(new URL("./fonts/DejaVuSans-OverviewSubset.woff", import.meta.url))
 
 function formatWinrate(value: number) {
   return `${(value * 100).toFixed(1)}%`
@@ -110,6 +111,7 @@ function statCard(title: string, value: string, names: string, accent: string, s
 
 export async function GET(request: Request, context: { params: Promise<{ season: string }> }) {
   try {
+    const fontData = await fontPromise
     const { season } = await context.params
     const seasonKey = decodeURIComponent(season)
     const selectedSeason = seasonData[seasonKey]
@@ -126,12 +128,12 @@ export async function GET(request: Request, context: { params: Promise<{ season:
 
     const leaderGroups = [
       { title: "Most matches", leaders: getMostMatches(stats), format: (value: number) => String(value), accent: "#fde68a" },
-      { title: "Most wins", leaders: getMostWins(stats), format: (value: number) => String(value), accent: "#6ee7b7" },
-      { title: "Most losses", leaders: getMostLosses(stats), format: (value: number) => String(value), accent: "#fda4af" },
+      { title: "Most wins", leaders: getMostWins(stats), format: (value: number) => String(value), accent: "#4ade80" },
+      { title: "Most losses", leaders: getMostLosses(stats), format: (value: number) => String(value), accent: "#fb7185" },
       { title: "Highest winrate", subtitle: ">= 20 matches", leaders: getHighestWinrate(stats), format: formatWinrate, accent: "#4ade80" },
       { title: "Lowest winrate", subtitle: ">= 20 matches", leaders: getLowestWinrate(stats), format: formatWinrate, accent: "#fb7185" },
-      { title: "Highest winstreak", leaders: getHighestWinstreak(stats), format: (value: number) => `${value}W`, accent: "#34d399" },
-      { title: "Highest losestreak", leaders: getHighestLosestreak(stats), format: (value: number) => `${value}L`, accent: "#f87171" },
+      { title: "Highest winstreak", leaders: getHighestWinstreak(stats), format: (value: number) => `${value}W`, accent: "#4ade80" },
+      { title: "Highest losestreak", leaders: getHighestLosestreak(stats), format: (value: number) => `${value}L`, accent: "#fb7185" },
     ].filter((group) => group.leaders.length > 0)
 
     const leaderRows = [
@@ -151,7 +153,7 @@ export async function GET(request: Request, context: { params: Promise<{ season:
             padding: "28px 30px",
             color: "white",
             background: "linear-gradient(135deg, #020617 0%, #0f172a 55%, #111827 100%)",
-            fontFamily: "sans-serif",
+            fontFamily: "DejaVu Sans",
             overflow: "hidden",
           }}
         >
@@ -320,6 +322,14 @@ export async function GET(request: Request, context: { params: Promise<{ season:
       {
         width: 1600,
         height: 900,
+        fonts: [
+          {
+            name: "DejaVu Sans",
+            data: fontData,
+            style: "normal",
+            weight: 400,
+          },
+        ],
       }
     )
   } catch (error) {
